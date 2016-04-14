@@ -19,7 +19,7 @@ namespace GabEventStore
 
         static void Main(string[] args)
         {
-            var chatRoom = "toto";
+            var chatRoom = "FSharpRoom";
             var user = "ouarzy";
 
             Init();
@@ -107,6 +107,11 @@ namespace GabEventStore
 
         }
 
+        private static void test(EventStoreSubscription arg1, ResolvedEvent arg2)
+        {
+            throw new NotImplementedException();
+        }
+
         private static Action<EventStoreSubscription, ResolvedEvent> OnRecieved(Action<ChatMessage> onRecieved)
         {
             return (sender, e) =>
@@ -137,5 +142,4 @@ namespace GabEventStore
         public string User { get; set; }
         public string Message { get; set; }
     }
-
 }

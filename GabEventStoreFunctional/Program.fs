@@ -18,7 +18,7 @@ let serialize (event:'a)=
     let case,_ = FSharpValue.GetUnionFields(event, typeof<'a>)
     EventData(Guid.NewGuid(), case.Name, true, data, null)
 
-let deserialize<'a> (event: ResolvedEvent) = 
+let deserialize<'a> (event: EventStore.ClientAPI.ResolvedEvent) = 
     let serializedString = System.Text.Encoding.UTF8.GetString(event.Event.Data)
     let event = JsonConvert.DeserializeObject<'a>(serializedString, settings)
     event
@@ -50,17 +50,15 @@ let chatMessageRecieved (chatMessage:ChatMessage) =
     let text = String.Format("{0} says:\n{1}", chatMessage.User, chatMessage.Message)
     printfn "%s" text
 
-let actionChatMessageRecieved(resolvedEvent: ResolvedEvent) =
-    let message = deserialize resolvedEvent;
-
-    chatMessageRecieved message
-
-let actionRecieved(subscription : EventStoreSubscription, event : ResolvedEvent) = Action actionChatMessageRecieved
+let onRecieved event = 
+    let chatMessage = deserialize<ChatMessage>(event)
+    let text = chatMessage.User + " says:\n" + chatMessage.Message + ";"
+    printfn "%s" text
 
 [<EntryPoint>]
 let main argv = 
     let room = "FSharpRoom"
     let connection = initializeConnection
-    connection.SubscribeToStreamAsync(room, false, actionRecieved)
+    connection.SubscribeToStreamAsync(room, false, new Action<EventStoreSubscription, EventStore.ClientAPI.ResolvedEvent>(fun((subscription : EventStore.ClientAPI.EventStoreSubscription)) -> (fun(event : EventStore.ClientAPI.ResolvedEvent) -> onRecieved(event))))
     Console.ReadLine() |> ignore
     0
