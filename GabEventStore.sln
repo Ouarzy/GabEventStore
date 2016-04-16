@@ -7,6 +7,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GabEventStore", "GabEventSt
 EndProject
 Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "GabEventStoreFunctional", "GabEventStoreFunctional\GabEventStoreFunctional.fsproj", "{6D224367-04D1-4A3D-8C82-756002294DBB}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GabEventStoreMob", "GabEventStoreMob\GabEventStoreMob.csproj", "{E165E14C-2E69-4B97-AFD4-1DA68C625D1F}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -21,6 +23,10 @@ Global
 		{6D224367-04D1-4A3D-8C82-756002294DBB}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{6D224367-04D1-4A3D-8C82-756002294DBB}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{6D224367-04D1-4A3D-8C82-756002294DBB}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E165E14C-2E69-4B97-AFD4-1DA68C625D1F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E165E14C-2E69-4B97-AFD4-1DA68C625D1F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E165E14C-2E69-4B97-AFD4-1DA68C625D1F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E165E14C-2E69-4B97-AFD4-1DA68C625D1F}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

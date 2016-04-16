@@ -104,12 +104,7 @@ namespace GabEventStore
                 room,
                 false,
                 OnRecieved(onRecieved));
-
-        }
-
-        private static void test(EventStoreSubscription arg1, ResolvedEvent arg2)
-        {
-            throw new NotImplementedException();
+            Console.WriteLine("_connecting to room " + room);
         }
 
         private static Action<EventStoreSubscription, ResolvedEvent> OnRecieved(Action<ChatMessage> onRecieved)
