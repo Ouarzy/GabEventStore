@@ -3,7 +3,8 @@ open System.Net
 open EventStore.ClientAPI
 open Newtonsoft.Json
 open EventStore.ClientAPI.SystemData
-open Microsoft.FSharp.Reflection
+open System.Threading
+
 
 type ChatMessage = {User:string; Message:string}
 
@@ -15,8 +16,7 @@ let settings =
 let serialize (event:'a)= 
     let serializedEvent = JsonConvert.SerializeObject(event, settings)
     let data = System.Text.Encoding.UTF8.GetBytes(serializedEvent)
-    let case,_ = FSharpValue.GetUnionFields(event, typeof<'a>)
-    EventData(Guid.NewGuid(), case.Name, true, data, null)
+    EventData(Guid.NewGuid(), typeof<ChatMessage>.Name, true, data, null)
 
 let deserialize<'a> (event: EventStore.ClientAPI.ResolvedEvent) = 
     let serializedString = System.Text.Encoding.UTF8.GetString(event.Event.Data)
@@ -29,7 +29,7 @@ let appendToStream (store:IEventStoreConnection) streamId newEvents =
 
 
 let initializeConnection = 
-    let ipAddresses = Dns.GetHostAddresses("ubuntustore.cloudapp.net")
+    let ipAddresses = Dns.GetHostAddresses("localhost")
     let ipadress = ipAddresses.[0]
     let endpoint = new IPEndPoint(ipadress, 1113)
     let settings = 
@@ -53,12 +53,25 @@ let chatMessageRecieved (chatMessage:ChatMessage) =
 let onRecieved event = 
     let chatMessage = deserialize<ChatMessage>(event)
     let text = chatMessage.User + " says:\n" + chatMessage.Message + ";"
-    printfn "%s" text
+    printfn "%s" text 
+
+let rec listenMessage room connection =
+    let message = Console.ReadLine()
+    match message with
+        |"!q" -> ignore
+        | _ -> 
+            appendToStream connection room [{User = "ouarzy"; Message = message}] 
+            listenMessage room connection
+    Thread.Sleep 1000
+    listenMessage room connection
+
+
 
 [<EntryPoint>]
 let main argv = 
     let room = "FSharpRoom"
     let connection = initializeConnection
-    connection.SubscribeToStreamAsync(room, false, new Action<EventStoreSubscription, EventStore.ClientAPI.ResolvedEvent>(fun((subscription : EventStore.ClientAPI.EventStoreSubscription)) -> (fun(event : EventStore.ClientAPI.ResolvedEvent) -> onRecieved(event))))
-    Console.ReadLine() |> ignore
+    connection.SubscribeToStreamAsync(room, false, new Action<EventStoreSubscription, EventStore.ClientAPI.ResolvedEvent>(fun((subscription : EventStore.ClientAPI.EventStoreSubscription)) -> (fun(event : EventStore.ClientAPI.ResolvedEvent) -> onRecieved(event)))) |> ignore
+    
+    listenMessage room connection |> ignore
     0

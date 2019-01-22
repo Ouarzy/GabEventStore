@@ -85,7 +85,7 @@ namespace GabEventStore
                 .KeepReconnecting()
                 .KeepRetrying();
 
-            var ipAddresses = Dns.GetHostAddresses("ubuntustore.cloudapp.net");
+            var ipAddresses = Dns.GetHostAddresses("localhost");
             _connection = EventStoreConnection.Create(
                 settings,
                 new IPEndPoint(IPAddress.Parse(ipAddresses.First().ToString()), 1113));
@@ -96,9 +96,7 @@ namespace GabEventStore
             _connection.ConnectAsync();
         }
 
-        private static void Subscribe(
-            string room,
-            Action<ChatMessage> onRecieved)
+        private static void Subscribe(string room, Action<ChatMessage> onRecieved)
         {
             _connection.SubscribeToStreamAsync(
                 room,
